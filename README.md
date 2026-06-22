@@ -18,6 +18,28 @@ This project implements an end-to-end IRIS classification pipeline using:
 |── LICENSE
 └── README.md
 ```
+## File Descriptions
+# setup.ipynb
+
+Main notebook used for:
+
+- Configuring GCP and Vertex AI environment
+- Uploading datasets to Google Cloud Storage
+- Loading and preprocessing data
+- Training the Decision Tree classifier
+- Evaluating model performance
+- Saving model artifacts
+- Uploading trained model artifacts to GCS
+- Running multiple experiment executions
+  
+# inference.py
+
+Standalone inference script used for:
+
+- Loading a trained model artifact from GCS
+- Running predictions on evaluation datasets
+- Computing evaluation metrics
+- Supporting reproducible inference independent of the training notebook
 
 ## Tasks Completed
 
