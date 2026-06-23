@@ -1,0 +1,27 @@
+[
+  {
+    "run_id": "20260621_173033",
+    "dataset": "data/iris.csv",
+    "accuracy": 0.9833333333333333
+  },
+  {
+    "run_id": "20260621_173205",
+    "dataset": "data/iris.csv",
+    "accuracy": 0.9833333333333333
+  },
+  {
+    "run_id": "20260621_173205_v2",
+    "dataset": "data/v2.csv",
+    "accuracy": 1.0
+  },
+  {
+    "run_id": "20260621_173205_v1",
+    "dataset": "data/v1.csv",
+    "accuracy": 0.9512195121951219
+  },
+  {
+    "run_id": "20260621_172017",
+    "dataset": "data/v1.csv",
+    "accuracy": 0.9512195121951219
+  }
+]
