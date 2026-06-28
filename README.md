@@ -22,6 +22,7 @@ This assignment demonstrates the integration of **Data Version Control (DVC)** i
 
 ---
 # Repo structure 
+```bash
 23f2004912_MLOPS_WEEKLY_ASSIGNMENT/
 ├── data/
 │   ├── iris.csv.dvc         ← ✅ Pointer file (small, tracked by Git)
@@ -32,14 +33,17 @@ This assignment demonstrates the integration of **Data Version Control (DVC)** i
 ├── inference.py             ← ✅ Code (tracked by Git)
 ├── metrics.csv              ← ✅ Metrics (small file, tracked by Git)
 └── setup.ipynb
+```
 
 ## ON GCS
+```bash
 gs://mlops-course-week2-ad35ebae-2568-47b9-83a-unique/iris-pipeline/
 └── files/
     └── md5/
         ├── [hash_49ba...]/  ← v1/data.csv (actual data)
         ├── [hash_54d4...]/  ← raw/iris.csv (actual data)
         └── [hash_xxxx...]/  ← v2/data.csv (actual data)
+```
 
 ## 📄 File Descriptions
 
