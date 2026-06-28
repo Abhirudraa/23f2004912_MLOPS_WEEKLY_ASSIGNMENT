@@ -1,0 +1,4 @@
+[core]
+    remote = gcs_remote
+['remote "gcs_remote"']
+    url = gs://mlops-course-week2-ad35ebae-2568-47b9-83a-unique/iris-pipeline

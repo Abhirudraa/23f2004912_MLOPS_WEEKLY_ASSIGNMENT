@@ -1,1 +1,3 @@
-/iris.csv
+# Ignore actual data files, only track .dvc pointers
+*.csv
+.csv.dvc
