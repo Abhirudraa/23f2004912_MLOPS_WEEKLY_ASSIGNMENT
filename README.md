@@ -30,6 +30,8 @@ This assignment demonstrates the integration of **Data Version Control (DVC)** i
 ├── models/
 │   ├── model.joblib.dvc     ← ✅ Pointer file (small, tracked by Git)
 │   └── .gitignore           ← ✅ Prevents actual model from Git
+├── scripts/
+|    ├── train.py    
 ├── inference.py             ← ✅ Code (tracked by Git)
 ├── metrics.csv              ← ✅ Metrics (small file, tracked by Git)
 └── setup.ipynb
