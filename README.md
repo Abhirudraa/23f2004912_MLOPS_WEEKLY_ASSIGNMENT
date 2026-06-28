@@ -1,86 +1,110 @@
-# Week 1 - IRIS ML Pipeline on Vertex AI
+# 23f2004912_MLOPS_WEEKLY_ASSIGNMENT
 
-## Overview
+## Week 2 Assignment: Integrating DVC into the IRIS Pipeline
 
-This project implements an end-to-end IRIS classification pipeline using:
+**Author:** Abhirudraa  
+**Roll Number:** 23f2004912  
+**Course:** MLOps (Week 2 Assignment)  
+**Repository:** [https://github.com/Abhirudraa/23f2004912_MLOPS_WEEKLY_ASSIGNMENT](https://github.com/Abhirudraa/23f2004912_MLOPS_WEEKLY_ASSIGNMENT)
 
-- Google Cloud Vertex AI Workbench
-- Google Cloud Storage (GCS)
-- Scikit-Learn
-- Python
+---
 
-## Repository Structure
+## 📋 Assignment Overview
 
-```text
-.
-├── setup.ipynb
-├── inference.py
-|── LICENSE
-└── README.md
+This assignment demonstrates the integration of **Data Version Control (DVC)** into a machine learning pipeline using the classic **IRIS dataset**. The objective is to create a reproducible, version-controlled workflow for both data and model artifacts, backed by **Google Cloud Storage (GCS)** .
+
+### Key Objectives
+- ✅ Initialize DVC in a Git repository
+- ✅ Configure GCS as a DVC remote
+- ✅ Version data and models across multiple iterations
+- ✅ Switch between data/model versions using DVC checkout
+- ✅ Push all relevant files to Git and GCS
+
+---
+
+
+---
+
+## 📄 File Descriptions
+
+### Core Configuration Files
+
+| File | Description | Purpose |
+|------|-------------|---------|
+| `.dvc/` | DVC internal directory | Stores DVC configuration, cache, and state |
+| `.dvc/.gitignore` | DVC cache ignore | Prevents large cache files from entering Git |
+| `.dvc/config` | DVC remote configuration | Stores GCS remote URL and settings |
+| `.dvcignore` | DVC ignore file | Specifies files DVC should ignore |
+| `.gitignore` | Git ignore file | Prevents large files from being committed to Git |
+
+### Data Files
+
+| File | Description | Details |
+|------|-------------|---------|
+| `data/raw/iris.csv` | Original IRIS dataset | 150 samples, 5 columns (sepal_length, sepal_width, petal_length, petal_width, species) |
+| `data/v1/data.csv` | Augmented dataset v1 | First augmented version with additional samples |
+| `data/v2/data.csv` | Augmented dataset v2 | Second augmented version |
+| `data/iris.csv` | Active data file | Points to current version being used |
+| `data/iris.csv.dvc` | DVC pointer file | Contains MD5 hash pointing to data in GCS |
+
+### Model Files
+
+| File | Description | Details |
+|------|-------------|---------|
+| `models/model.joblib` | Trained model | Random Forest classifier saved with joblib |
+| `models/model.joblib.dvc` | DVC pointer file | Contains MD5 hash pointing to model in GCS |
+
+### Scripts
+
+| File | Description | Purpose |
+|------|-------------|---------|
+| `scripts/train.py` | Training script | Loads data, trains Random Forest model, saves model and metrics |
+
+### Output Files
+
+| File | Description | Details |
+|------|-------------|---------|
+| `metrics.csv` | Model accuracy | Contains accuracy score for the current model version |
+
+### Version Tags
+
+| Tag | Description | Data Version | Accuracy |
+|-----|-------------|--------------|----------|
+| `v1.0` | Model trained on raw IRIS dataset | raw/iris.csv (150 samples) | 1.0000 |
+| `v2.0` | Model trained on augmented v1 dataset | v1/data.csv | 0.9048 |
+| `v3.0` | Model trained on v2 dataset | v2/data.csv | 1.0000 |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.7+
+- Git
+- DVC (Data Version Control)
+- Google Cloud SDK (for GCS access)
+
+### Setup Instructions
+
+1. **Clone the Repository**
+```bash
+git clone https://github.com/Abhirudraa/23f2004912_MLOPS_WEEKLY_ASSIGNMENT.git
+cd 23f2004912_MLOPS_WEEKLY_ASSIGNMENT
+git checkout week_2
+
+
+# Install Dependencies
+pip install -r requirements.txt
+pip install "dvc[gs]"
+
+# Configure DVC Remote (if pushing/pulling from GCS)
+
+dvc remote add -d gcs_remote gs://your-bucket-name/iris-pipeline
+
+# Pull Data and Models from GCS
+dvc pull
+
+# Train the Model
+
+python scripts/train.py data/iris.csv
 ```
-## File Descriptions
-# setup.ipynb
-
-Main notebook used for:
-
-- Configuring GCP and Vertex AI environment
-- Uploading datasets to Google Cloud Storage
-- Loading and preprocessing data
-- Training the Decision Tree classifier
-- Evaluating model performance
-- Saving model artifacts
-- Uploading trained model artifacts to GCS
-- Running multiple experiment executions
-  
-# inference.py
-
-Standalone inference script used for:
-
-- Loading a trained model artifact from GCS
-- Running predictions on evaluation datasets
-- Computing evaluation metrics
-- Supporting reproducible inference independent of the training notebook
-
-## Tasks Completed
-
-### Task 1
-- Set up GCP Project
-- Created Vertex AI Workbench instance
-- Enabled required APIs
-
-### Task 2
-- Created GCS bucket
-- Uploaded IRIS dataset to GCS
-
-### Task 3
-- Trained Decision Tree Classifier
-- Saved model as `model.joblib`
-- Uploaded model artifacts to GCS
-
-### Task 4
-- Created separate `inference.py`
-- Loaded trained model from GCS
-- Ran inference on evaluation dataset
-
-### Task 5
-- Executed training and inference multiple times
-- Stored outputs in timestamp-based folders
-
-### Task 6 (Optional)
-- Evaluated model on:
-  - `v1.csv`
-  - `v2.csv`
-- Compared results across data versions
-
-## Model
-
-- Algorithm: Decision Tree Classifier
-- Accuracy: ~98.3%
-
-## Author
-
-Abhijeet Kumar
-
-IIT Madras BS Degree Program
-
-Roll Number: 23f2004912
