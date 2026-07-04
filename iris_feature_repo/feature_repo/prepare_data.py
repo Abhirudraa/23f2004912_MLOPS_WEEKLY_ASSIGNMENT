@@ -1,33 +1,26 @@
 import pandas as pd
 
-# Read original IRIS dataset
-df = pd.read_csv("../../data/iris.csv")
+def main():
+    df = pd.read_csv("../../data/iris.csv")
 
-# Add unique entity id
-df["iris_id"] = range(len(df))
+    df["iris_id"] = range(len(df))
+    df["event_timestamp"] = pd.Timestamp("2025-01-01")
 
-# Feast requires an event timestamp
-df["event_timestamp"] = pd.Timestamp("2025-01-01")
+    cols = [
+        "iris_id",
+        "event_timestamp",
+        "sepal_length",
+        "sepal_width",
+        "petal_length",
+        "petal_width",
+        "species",
+    ]
 
-# Move columns to front
-cols = [
-    "iris_id",
-    "event_timestamp",
-    "sepal_length",
-    "sepal_width",
-    "petal_length",
-    "petal_width",
-    "species"
-]
+    df = df[cols]
 
-df = df[cols]
+    df.to_parquet("data/iris_features.parquet", index=False)
+    print("Saved iris_features.parquet")
 
-print(df.head())
 
-# Save as Parquet
-df.to_parquet(
-    "data/iris_features.parquet",
-    index=False
-)
-
-print("Saved iris_features.parquet")
+if __name__ == "__main__":
+    main()
