@@ -2,3 +2,9 @@ artifacts/
 downloaded_model.joblib
 __pycache__/
 *.pyc
+
+# Feast generated files
+iris_feature_repo/feature_repo/data/*.db
+iris_feature_repo/feature_repo/data/driver_*.parquet
+iris_feature_repo/feature_repo/test_workflow.py
+
