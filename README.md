@@ -1,9 +1,9 @@
 # Week 3 - Integrating Feast Feature Store into the IRIS Pipeline
-
-**Course:** MLOps Weekly Assignment 3
-**Name:** Abhijeet Kumar
-**Roll Number:** 23f2004912
-
+```
+- **Course:** MLOps Weekly Assignment 3
+- **Name:** Abhijeet Kumar
+- **Roll Number:** 23f2004912
+```
 ---
 
 # Overview
