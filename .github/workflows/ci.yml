@@ -27,6 +27,7 @@ jobs:
         run: |
           pip install --upgrade pip==24.0 setuptools wheel
           pip install dvc pytest cml pandas scikit-learn joblib
+          # No requirements.txt – we install only the essential packages
 
       # ----- Workload Identity Federation (no JSON key) -----
       - id: 'auth'
