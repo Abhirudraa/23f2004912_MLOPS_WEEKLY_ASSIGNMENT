@@ -22,13 +22,14 @@ jobs:
         with:
           python-version: '3.9'
 
+      # ----- FIX: Downgrade pip to 24.0 to avoid DVC metadata parsing error -----
       - name: Install dependencies
         run: |
-          pip install --upgrade pip setuptools wheel
+          pip install --upgrade pip==24.0 setuptools wheel
           pip install dvc pytest cml
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Authenticate using Workload Identity Federation (no JSON key)
+      # ----- Authenticate using Workload Identity Federation (no JSON key) -----
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
@@ -39,19 +40,22 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
 
+      # ----- Configure DVC remote (matches your local setup) -----
       - name: Configure DVC remote
         run: |
-          # Ensure the remote exists (add if missing)
+          # Add remote if not present (with full bucket path including /iris-pipeline)
           if ! dvc remote list | grep -q gcs_remote; then
-            dvc remote add gcs_remote gs://mlops-course-week2-ad35ebae-2568-47b9-83a-unique
+            dvc remote add gcs_remote gs://mlops-course-week2-ad35ebae-2568-47b9-83a-unique/iris-pipeline
           fi
           dvc remote default gcs_remote
           dvc remote modify --local gcs_remote projectname project-ad35ebae-2568-47b9-83a
           dvc remote modify --local gcs_remote bucket mlops-course-week2-ad35ebae-2568-47b9-83a-unique
 
+      # ----- Pull data and models -----
       - name: Pull data and models with DVC
         run: dvc pull
 
+      # ----- Run tests (allow failure to capture output) -----
       - name: Run pytest (allow failure)
         id: pytest
         continue-on-error: true
@@ -59,10 +63,12 @@ jobs:
           pytest tests/ --junitxml=test-results.xml | tee pytest_output.txt
           echo "status=$?" >> $GITHUB_OUTPUT
 
+      # ----- Generate metrics for CML -----
       - name: Generate evaluation metrics
         run: |
           python scripts/evaluate.py > metrics.txt
 
+      # ----- Build CML report -----
       - name: Build CML report
         run: |
           echo "## CI Report" > report.md
@@ -76,12 +82,14 @@ jobs:
           cat pytest_output.txt >> report.md
           echo '```' >> report.md
 
+      # ----- Post CML comment on PR -----
       - name: Post CML comment
         if: github.event_name == 'pull_request'
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cml comment create report.md
 
+      # ----- Fail workflow if tests failed -----
       - name: Fail workflow if tests failed
         if: steps.pytest.outputs.status != '0'
         run: exit 1
