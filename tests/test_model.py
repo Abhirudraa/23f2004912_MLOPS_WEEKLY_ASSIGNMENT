@@ -9,7 +9,7 @@ def load_data():
     return X, y
 
 def test_model_metrics():
-    model = joblib.load('models/model.pkl')
+    model = joblib.load('models/model.joblib')
     X, y_true = load_data()
     y_pred = model.predict(X)
 
