@@ -26,19 +26,16 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip==24.0 setuptools wheel
-          # Install DVC with GCS support, plus other packages
           pip install dvc[gs] pytest pandas scikit-learn joblib
-          # Install CML from official script (not pip)
           curl -fsSL https://cml.dev/install.sh | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      # ----- Workload Identity Federation (no JSON key) -----
+      # ----- WIF authentication – no service account needed -----
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
           workload_identity_provider: 'projects/712973134625/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
-          service_account: 'github-actions-sa@project-ad35ebae-2568-47b9-83a.iam.gserviceaccount.com'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
