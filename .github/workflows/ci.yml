@@ -41,8 +41,13 @@ jobs:
 
       - name: Configure DVC remote
         run: |
-          dvc remote modify --local gcs projectname project-ad35ebae-2568-47b9-83a
-          dvc remote modify --local gcs bucket mlops-course-week2-ad35ebae-2568-47b9-83a-unique
+          # Ensure the remote exists (add if missing)
+          if ! dvc remote list | grep -q gcs_remote; then
+            dvc remote add gcs_remote gs://mlops-course-week2-ad35ebae-2568-47b9-83a-unique
+          fi
+          dvc remote default gcs_remote
+          dvc remote modify --local gcs_remote projectname project-ad35ebae-2568-47b9-83a
+          dvc remote modify --local gcs_remote bucket mlops-course-week2-ad35ebae-2568-47b9-83a-unique
 
       - name: Pull data and models with DVC
         run: dvc pull
