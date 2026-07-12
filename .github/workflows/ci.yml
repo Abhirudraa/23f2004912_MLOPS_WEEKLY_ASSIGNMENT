@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install dvc pytest cml
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # Authenticate using Workload Identity Federation (no JSON key)
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+          service_account: 'github-actions-sa@project-ad35ebae-2568-47b9-83a.iam.gserviceaccount.com'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Configure DVC remote
+        run: |
+          dvc remote modify --local gcs projectname project-ad35ebae-2568-47b9-83a
+          dvc remote modify --local gcs bucket mlops-course-week2-ad35ebae-2568-47b9-83a-unique
+
+      - name: Pull data and models with DVC
+        run: dvc pull
+
+      - name: Run pytest (allow failure)
+        id: pytest
+        continue-on-error: true
+        run: |
+          pytest tests/ --junitxml=test-results.xml | tee pytest_output.txt
+          echo "status=$?" >> $GITHUB_OUTPUT
+
+      - name: Generate evaluation metrics
+        run: |
+          python scripts/evaluate.py > metrics.txt
+
+      - name: Build CML report
+        run: |
+          echo "## CI Report" > report.md
+          echo "### Model Metrics" >> report.md
+          echo '```' >> report.md
+          cat metrics.txt >> report.md
+          echo '```' >> report.md
+          echo "" >> report.md
+          echo "### Test Output" >> report.md
+          echo '```' >> report.md
+          cat pytest_output.txt >> report.md
+          echo '```' >> report.md
+
+      - name: Post CML comment
+        if: github.event_name == 'pull_request'
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: cml comment create report.md
+
+      - name: Fail workflow if tests failed
+        if: steps.pytest.outputs.status != '0'
+        run: exit 1
