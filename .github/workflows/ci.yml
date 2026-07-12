@@ -26,9 +26,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip==24.0 setuptools wheel
-          # Install Python packages (no cml via pip)
-          pip install dvc pytest pandas scikit-learn joblib
-          # Install CML from official script
+          # Install DVC with GCS support, plus other packages
+          pip install dvc[gs] pytest pandas scikit-learn joblib
+          # Install CML from official script (not pip)
           curl -fsSL https://cml.dev/install.sh | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
