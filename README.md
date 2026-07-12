@@ -1,86 +1,237 @@
-# Week 1 - IRIS ML Pipeline on Vertex AI
+# MLOps Weekly Assignment – Week 4: Continuous Integration for ML Pipelines
 
-## Overview
+## Student Information
 
-This project implements an end-to-end IRIS classification pipeline using:
+* **Name:** Abhijeet Kumar
+* **Roll Number:** 23F2004912
+* **Course:** MLOps
+* **Institute:** IIT Madras BS Degree Program in Data Science and Applications
 
-- Google Cloud Vertex AI Workbench
-- Google Cloud Storage (GCS)
-- Scikit-Learn
-- Python
+---
 
-## Repository Structure
+# Project Overview
+
+This project implements a complete **Machine Learning Continuous Integration (CI) pipeline** for the Iris Classification problem. The workflow combines **GitHub Actions**, **DVC**, **Google Cloud Storage (GCS)**, **Workload Identity Federation (OIDC)**, **pytest**, and **CML** to automatically validate data, evaluate model performance, and report results on every code change.
+
+The objective is to ensure that every push and pull request is automatically tested before being merged into the main branch.
+
+---
+
+# Project Structure
 
 ```text
 .
-├── setup.ipynb
+├── data
+│   ├── raw
+│   │   ├── iris.csv
+│   │   └── iris.csv.dvc
+│   └── processed
+│       ├── train.csv
+│       ├── train.csv.dvc
+│       ├── eval.csv
+│       └── eval.csv.dvc
+├── models
+│   ├── model.joblib
+│   └── model.joblib.dvc
+├── scripts
+│   ├── train.py
+│   └── evaluate.py
+├── tests
+│   ├── test_data.py
+│   └── test_model.py
 ├── inference.py
-|── LICENSE
-└── README.md
+├── setup.ipynb
+├── README.md
+└── LICENSE
 ```
-## File Descriptions
-# setup.ipynb
 
-Main notebook used for:
+---
 
-- Configuring GCP and Vertex AI environment
-- Uploading datasets to Google Cloud Storage
-- Loading and preprocessing data
-- Training the Decision Tree classifier
-- Evaluating model performance
-- Saving model artifacts
-- Uploading trained model artifacts to GCS
-- Running multiple experiment executions
-  
-# inference.py
+# Technologies Used
 
-Standalone inference script used for:
+* Python
+* Scikit-learn
+* Pytest
+* DVC
+* Google Cloud Storage (GCS)
+* GitHub Actions
+* Google Workload Identity Federation (OIDC)
+* Continuous Machine Learning (CML)
 
-- Loading a trained model artifact from GCS
-- Running predictions on evaluation datasets
-- Computing evaluation metrics
-- Supporting reproducible inference independent of the training notebook
+---
 
-## Tasks Completed
+# Assignment Tasks Completed
 
-### Task 1
-- Set up GCP Project
-- Created Vertex AI Workbench instance
-- Enabled required APIs
+## Task 1 – Data Validation Tests
 
-### Task 2
-- Created GCS bucket
-- Uploaded IRIS dataset to GCS
+Implemented unit tests to validate:
 
-### Task 3
-- Trained Decision Tree Classifier
-- Saved model as `model.joblib`
-- Uploaded model artifacts to GCS
+* Dataset schema
+* Missing values
+* Feature data types
+* Valid feature ranges
 
-### Task 4
-- Created separate `inference.py`
-- Loaded trained model from GCS
-- Ran inference on evaluation dataset
+---
 
-### Task 5
-- Executed training and inference multiple times
-- Stored outputs in timestamp-based folders
+## Task 2 – Model Evaluation Tests
 
-### Task 6 (Optional)
-- Evaluated model on:
-  - `v1.csv`
-  - `v2.csv`
-- Compared results across data versions
+Implemented tests that:
 
-## Model
+* Load the trained model
+* Run inference on evaluation data
+* Verify evaluation metrics satisfy minimum thresholds
 
-- Algorithm: Decision Tree Classifier
-- Accuracy: ~98.3%
+Metrics evaluated include:
 
-## Author
+* Accuracy
+* Precision
+* Recall
+* F1 Score
 
-Abhijeet Kumar
+---
 
-IIT Madras BS Degree Program
+## Task 3 – GitHub Actions with DVC
 
-Roll Number: 23f2004912
+Configured GitHub Actions to:
+
+* Checkout repository
+* Install dependencies
+* Authenticate with Google Cloud using Workload Identity Federation
+* Pull versioned datasets and models using DVC
+* Execute automated tests
+
+---
+
+## Task 4 – Continuous Integration
+
+Configured CI to execute automatically on:
+
+* Every Push
+* Every Pull Request
+
+The workflow is enabled for both the **main** branch and all **week_*** branches.
+
+---
+
+## Task 5 – CML Reporting
+
+Integrated Continuous Machine Learning (CML) to automatically publish:
+
+* Model evaluation metrics
+* Test execution summary
+
+as part of the Pull Request workflow.
+
+Example report:
+
+```text
+Accuracy : 0.952
+Precision: 0.958
+Recall   : 0.952
+F1 Score : 0.952
+
+All tests passed.
+```
+
+---
+
+## Task 6 – Pull Request Workflow
+
+Successfully completed the full CI workflow:
+
+* Created Pull Request
+* Triggered GitHub Actions
+* Executed automated tests
+* Generated evaluation report
+* Merged `week_4` into `main`
+
+---
+
+# GitHub Actions Workflow
+
+The CI pipeline performs the following steps automatically:
+
+```text
+Push / Pull Request
+        │
+        ▼
+GitHub Actions
+        │
+        ├── Authenticate with Google Cloud (OIDC)
+        ├── Configure DVC
+        ├── Pull Data & Model
+        ├── Run Data Validation Tests
+        ├── Run Model Evaluation Tests
+        ├── Evaluate Model
+        ├── Generate Metrics
+        └── Publish CML Report
+```
+
+---
+
+# Model Performance
+
+| Metric    | Value |
+| --------- | ----: |
+| Accuracy  | 0.952 |
+| Precision | 0.958 |
+| Recall    | 0.952 |
+| F1 Score  | 0.952 |
+
+---
+
+# Running the Project
+
+Clone the repository:
+
+```bash
+git clone <repository-url>
+cd 23f2004912_MLOPS_WEEKLY_ASSIGNMENT
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Pull versioned artifacts:
+
+```bash
+dvc pull
+```
+
+Run tests:
+
+```bash
+pytest
+```
+
+Evaluate the model:
+
+```bash
+python scripts/evaluate.py
+```
+
+---
+
+# Learning Outcomes
+
+Through this assignment, the following concepts were implemented:
+
+* Continuous Integration using GitHub Actions
+* Data and model versioning with DVC
+* Secure Google Cloud authentication using Workload Identity Federation
+* Automated model validation with Pytest
+* Continuous Machine Learning reporting with CML
+* Automated quality checks before merging code
+
+---
+
+# Author
+
+**Abhijeet Kumar**
+
+Roll Number: **23F2004912**
+
+IIT Madras BS Degree Program in Data Science and Applications
