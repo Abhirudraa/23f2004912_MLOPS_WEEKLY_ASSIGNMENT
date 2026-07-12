@@ -26,8 +26,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip==24.0 setuptools wheel
-          pip install dvc pytest cml pandas scikit-learn joblib
-          # No requirements.txt – we install only the essential packages
+          # Install Python packages (no cml via pip)
+          pip install dvc pytest pandas scikit-learn joblib
+          # Install CML from official script
+          curl -fsSL https://cml.dev/install.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # ----- Workload Identity Federation (no JSON key) -----
       - id: 'auth'
