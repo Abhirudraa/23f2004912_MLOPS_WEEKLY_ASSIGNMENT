@@ -2,3 +2,5 @@ artifacts/
 downloaded_model.joblib
 __pycache__/
 *.pyc
+mlflow.db
+mlruns/
