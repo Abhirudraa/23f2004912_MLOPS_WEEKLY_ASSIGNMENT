@@ -33,8 +33,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install dvc[gs] pytest pandas scikit-learn joblib skops
-
+          pip install dvc[gs] pytest pandas scikit-learn joblib skops mlflow
       # Authenticate to Google Cloud using Workload Identity Federation
       - id: auth
         name: Authenticate to Google Cloud
