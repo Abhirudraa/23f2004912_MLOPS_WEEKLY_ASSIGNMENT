@@ -11,7 +11,7 @@ model = load("models/model.skops", trusted=trusted)
 @app.route("/")
 def home():
     return jsonify({
-        "message": "IRIS Prediction API is Running!"
+        "message": "IRIS Prediction API - Version 2 (GitHub Actions CD)"
     })
 
 
