@@ -3,7 +3,7 @@ name: Continuous Deployment
 on:
   push:
     branches:
-      - week_6
+      - week_7
 
 permissions:
   contents: read
@@ -41,7 +41,7 @@ jobs:
         with:
           install_components: gke-gcloud-auth-plugin
 
-      # Verify plugin
+      # Verify GKE Auth Plugin
       - name: Verify GKE Auth Plugin
         run: |
           gke-gcloud-auth-plugin --version
@@ -75,12 +75,22 @@ jobs:
           docker push \
             $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ github.sha }}
 
-      # Deploy to GKE
-      - name: Deploy to GKE
+      # Update Deployment Image
+      - name: Update Deployment Image
         run: |
           kubectl set image deployment/iris-api \
             iris-api=$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ github.sha }}
 
+      # Apply Kubernetes Manifests
+      - name: Apply Kubernetes Manifests
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/hpa.yaml
+
+      # Wait for Rollout
+      - name: Wait for Rollout
+        run: |
           kubectl rollout status deployment/iris-api
 
       # Verify Deployment
@@ -88,3 +98,29 @@ jobs:
         run: |
           kubectl get pods
           kubectl get services
+          kubectl get hpa
+
+      # Install wrk
+      - name: Install wrk
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wrk
+
+      # Wait for LoadBalancer
+      - name: Wait for LoadBalancer
+        run: |
+          sleep 30
+
+      # Run Stress Test
+      - name: Stress Test
+        run: |
+          EXTERNAL_IP=$(kubectl get svc iris-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+          echo "Running stress test against http://$EXTERNAL_IP/predict"
+
+          wrk \
+            -t4 \
+            -c1000 \
+            -d30s \
+            -s stress/post.lua \
+            http://$EXTERNAL_IP/predict
